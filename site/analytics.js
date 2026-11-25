@@ -66,12 +66,18 @@ function showChoices() {
   panel.id = 'analytics-choice';
   panel.className = 'analytics-choice';
   panel.setAttribute('aria-label', 'Analytics preference');
-  panel.innerHTML = `<p>Allow optional Google Analytics cookies to help us understand visits and calculator use? Your entered costs and dates are not sent. <a href="/privacy/">Privacy details</a></p><div class="resource-actions"><button class="button secondary button-md" type="button" data-analytics="deny">Reject analytics</button><button class="button button-md" type="button" data-analytics="allow">Allow analytics</button></div><p class="caption-2 muted">You can change your choice using Analytics settings in the footer.</p>`;
+  const choiceButton = allowed
+    ? '<button class="button secondary button-md" type="button" data-analytics="deny">Turn off analytics</button>'
+    : '<button class="button button-md" type="button" data-analytics="allow">Allow analytics</button>';
+  panel.innerHTML = `<p>Analytics is ${allowed ? 'on' : 'off'}. Google Analytics cookies help us understand visits and calculator use. Your entered costs and dates are never sent to Analytics. <a href="/privacy/">Privacy details</a></p><div class="resource-actions">${choiceButton}<button class="button secondary button-md" type="button" data-analytics="close">Close</button></div>`;
   for (const button of panel.querySelectorAll('[data-analytics]')) {
     button.addEventListener('click', () => {
       const choice = button.dataset.analytics;
-      saveChoice(choice);
       panel.remove();
+      settings.setAttribute('aria-expanded', 'false');
+      settings.focus();
+      if (choice === 'close') return;
+      saveChoice(choice);
       if (choice === 'allow') enable();
       else {
         allowed = false;
@@ -84,12 +90,14 @@ function showChoices() {
     });
   }
   document.body.append(panel);
+  settings.setAttribute('aria-expanded', 'true');
+  panel.querySelector('[data-analytics="close"]').focus();
 }
 const settings = document.createElement('button');
 settings.className = 'text-button button-sm analytics-settings';
 settings.type = 'button';
 settings.textContent = 'Analytics settings';
+settings.setAttribute('aria-expanded', 'false');
 settings.addEventListener('click', showChoices);
 document.querySelector('footer nav')?.append(settings);
 if (readChoice() === 'allow') enable();
-else if (readChoice() !== 'deny') showChoices();

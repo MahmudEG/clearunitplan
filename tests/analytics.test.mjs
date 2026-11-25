@@ -10,7 +10,7 @@ function browser(choice) {
   let panel;
   let settings;
   let reloads = 0;
-  const makeButton = (value) => ({dataset:{analytics:value}, addEventListener(_, fn) { this.click = fn; }});
+  const makeButton = (value) => ({dataset:{analytics:value}, focus(){}, setAttribute(){}, addEventListener(_, fn) { this.click = fn; }});
   const context = {
     URL, Date,
     location:{origin:'https://clearunitplan.com',pathname:'/',hostname:'clearunitplan.com',reload(){ reloads++; }},
@@ -23,10 +23,10 @@ function browser(choice) {
       querySelector(selector) { return selector === '#analytics-choice' ? panel : {append(element){settings=element;}}; },
       createElement(tag) {
         if (tag === 'section') {
-          const buttons = [makeButton('deny'),makeButton('allow')];
-          return {buttons,setAttribute(){},querySelectorAll(){return buttons;},remove(){panel=undefined;}};
+          const buttons = [makeButton('deny'),makeButton('allow'),makeButton('close')];
+          return {buttons,setAttribute(){},querySelector(){return buttons[2];},querySelectorAll(){return buttons.filter(button => this.innerHTML.includes('data-analytics="' + button.dataset.analytics + '"'));},remove(){panel=undefined;}};
         }
-        return {addEventListener(_,fn){this.click=fn;}};
+        return {focus(){},setAttribute(){},addEventListener(_,fn){this.click=fn;}};
       }
     }
   };
@@ -38,17 +38,20 @@ test('analytics makes no tag requests or events before opt-in or after rejection
   assert.equal(b.scripts.length,0);
   b.context.track('comparison_complete');
   assert.equal(b.context.window.dataLayer,undefined);
-  b.panel.buttons[0].click();
-  assert.equal(b.saved.get('cup-analytics-consent-v1'),'deny');
+  assert.equal(b.panel,undefined);
+  b.settings.click();
+  assert.equal(b.panel.buttons[0].click,undefined);
+  b.panel.buttons[2].click();
+  assert.equal(b.saved.has('cup-analytics-consent-v1'),false);
   assert.equal(b.scripts.length,0);
-  assert.equal(browser('deny').panel,undefined);
+  assert.equal(browser('deny').scripts.length,0);
   b.settings.click(); b.panel.buttons[1].click();
   assert.equal(b.scripts.length,2);
   assert.equal(b.context.window['ga-disable-G-J0ZJ9KL7QJ'],false);
 });
 test('consent loads each Google tag once, sanitizes attribution and allowlists event data', () => {
   const b=browser();
-  b.panel.buttons[1].click();
+  b.settings.click(); b.panel.buttons[1].click();
   assert.equal(b.scripts.length,2);
   assert.match(b.scripts[0].src,/G-J0ZJ9KL7QJ$/);
   assert.equal(b.scripts[1].src,'https://www.googletagmanager.com/gtm.js?id=GTM-WZ6D4F74');
@@ -67,7 +70,7 @@ test('consent loads each Google tag once, sanitizes attribution and allowlists e
   assert.equal(events[0][2].input_mode,'example');
   assert.equal(events[1][2].input_mode,'own_inputs');
   assert.deepEqual(Object.keys(events[1][2]).sort(),['input_mode','send_to']);
-  b.settings.click(); b.panel.buttons[1].click();
+  b.settings.click(); b.panel.buttons[2].click();
   assert.equal(b.scripts.length,2);
 });
 test('withdrawing consent stops custom events and reloads to stop the active tag', () => {
