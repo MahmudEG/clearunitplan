@@ -3,6 +3,13 @@ import {calculate} from './calculator.js';
 const form = document.querySelector('#plan-form');
 const results = document.querySelector('#results');
 const error = document.querySelector('#error');
+const empty = document.querySelector('#empty');
+function hideResults() {
+  results.hidden = true;
+  empty.hidden = false;
+  error.textContent = '';
+  for (const field of form.querySelectorAll('[aria-invalid]')) field.removeAttribute('aria-invalid');
+}
 const cash = cents => new Intl.NumberFormat('en-US', {style:'currency', currency:'USD'}).format(cents / 100);
 const dateLabel = value => new Intl.DateTimeFormat('en-US', {dateStyle:'medium', timeZone:'UTC'}).format(new Date(value + 'T00:00:00Z'));
 const today = () => {
@@ -31,11 +38,11 @@ form.addEventListener('submit', event => {
     const names = comparison.winners.join(' and ');
     const heading = comparison.winners.length > 1 ? names + ' tie at ' + cash(comparison.best) : names + ' costs least at ' + cash(comparison.best);
     document.querySelector('#result-content').innerHTML = `
-      <p class="eyebrow">Your comparison</p><h2 id="result-title">${heading}</h2>
+      <h2 id="result-title" class="heading-4">${heading}</h2>
       <p>Additional costs from ${dateLabel(data.today)} through each completed exit, under your entered billing and notice terms.</p>
       <div class="result-grid">${comparison.options.map(option => `
         <article class="result-card ${option.totalCents === comparison.best ? 'winner' : ''}">
-          <h3>${option.name}</h3><p class="total">${cash(option.totalCents)}</p>
+          <h3 class="title-1">${option.name}</h3><p class="total">${cash(option.totalCents)}</p>
           <div class="bar-track" aria-hidden="true"><div class="bar" style="width:${option.totalCents / max * 100}%"></div></div>
           <p class="cost-line"><span>Transport and help</span><strong>${cash(option.transportCents)}</strong></p>
           <p class="cost-line"><span>Additional rent</span><strong>${cash(option.rentCents)}</strong></p>
@@ -45,18 +52,28 @@ form.addEventListener('submit', event => {
           ${option.noticeExtended ? '<p class="result-note">The entered notice period ends after your move. Confirm the charge with the facility.</p>' : ''}
           <p class="result-note">${option.totalCents === comparison.best ? 'Lowest entered cost.' : cash(option.totalCents - comparison.best) + ' more than the lowest option.'}</p>
         </article>`).join('')}</div>
-      <h3>Before you commit</h3><ul class="checklist"><li>Confirm that notice given on ${dateLabel(data.noticeDate)} is accepted and ask for the final bill in writing.</li><li>Book the transport and help needed to finish your chosen plan on time.</li><li>Empty and clean the unit, remove your lock, and complete the facility's move-out confirmation.</li></ul>
-      <p class="small">A full extra month is counted on a renewal date. Deposits, past-due balances, refunds larger than extra rent, future rate changes and unentered charges require a separate adjustment. Verify your final amount with the facility.</p>`;
+      <h3 class="title-1">Before you commit</h3><ul class="checklist"><li>Confirm that notice given on ${dateLabel(data.noticeDate)} is accepted and ask for the final bill in writing.</li><li>Book the transport and help needed to finish your chosen plan on time.</li><li>Empty and clean the unit, remove your lock, and complete the facility's closing confirmation.</li></ul>
+      <p class="small">A full extra month is counted on a renewal date. Deposits, overdue balances, refunds larger than extra rent, future rate changes and unentered charges require a separate adjustment. Verify your final amount with the facility.</p>`;
     results.hidden = false;
+    empty.hidden = true;
     results.focus();
   } catch (exception) {
-    results.hidden = true;
+    hideResults();
     error.textContent = exception.message;
   }
 });
 
-form.addEventListener('input', () => { results.hidden = true; error.textContent = ''; });
-form.addEventListener('reset', () => { results.hidden = true; error.textContent = ''; setTimeout(setInitialDates, 0); });
+form.addEventListener('input', hideResults);
+form.addEventListener('reset', () => { hideResults(); setTimeout(setInitialDates, 0); });
+// Name the first field that needs attention beside the submit button.
+form.addEventListener('invalid', event => {
+  const field = event.target;
+  field.setAttribute('aria-invalid', 'true');
+  if (field !== form.querySelector('input:invalid')) return;
+  const label = field.type === 'checkbox' ? 'the billing confirmation' : field.closest('label').firstChild.textContent.trim();
+  const group = field.closest('fieldset').querySelector('legend').textContent;
+  error.textContent = 'Check ' + label + ' under ' + group + '.';
+}, true);
 document.querySelector('#print').addEventListener('click', () => window.print());
 document.querySelector('#example').addEventListener('click', () => {
   const values = {

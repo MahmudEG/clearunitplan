@@ -23,7 +23,7 @@ GitHub may delay scheduled jobs. Scheduled workflows in inactive public reposito
 
 ## Launch status and remaining work
 
-The repository contains the working prototype, seven supporting pages, calculation checks, source checks and a manual deployment workflow. Publication, DNS, Google account setup and demand validation remain separate steps. No revenue or visitor data is connected yet. No ads are active.
+The repository contains the working prototype, eight supporting pages, calculation checks, source checks and a manual deployment workflow. Publication, DNS, Google account setup and demand validation remain separate steps. No revenue or visitor data is connected yet. No ads are active.
 
 Read [LAUNCH.md](LAUNCH.md) for domain and publishing steps. The source and generated site can also deploy to Cloudflare Pages using build command `npm run build` and output directory `dist`.
 

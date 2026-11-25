@@ -41,7 +41,7 @@ export function calculate(input) {
   const horizon = new Date(today.getTime() + 730 * DAY);
   const options = input.options.map(option => {
     const finish = readDate(option.finish);
-    if (finish < today || finish > horizon) throw new Error('Move-out dates must be today or within two years.');
+    if (finish < today || finish > horizon) throw new Error('Moving dates must be today or within two years.');
     const release = new Date(Math.max(finish.getTime(), earliestRelease.getTime()));
     if (release > horizon) throw new Error('The notice end date must be within two years.');
     const transportCents = money(option.transport, option.name + ' moving cost');

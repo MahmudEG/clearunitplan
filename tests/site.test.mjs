@@ -8,7 +8,7 @@ test('build emits linked pages, sitemap and canonical domain without ad placehol
   execFileSync(process.execPath, ['scripts/build.mjs']);
   const files = await readdir('dist', {recursive:true});
   const htmlFiles = files.filter(file => file.endsWith('.html'));
-  assert.equal(htmlFiles.length, 9);
+  assert.equal(htmlFiles.length, 10);
   for (const file of htmlFiles) {
     const html = await readFile(resolve('dist',file),'utf8');
     assert.ok(html.includes('<html lang='));
@@ -24,5 +24,5 @@ test('build emits linked pages, sitemap and canonical domain without ad placehol
     }
   }
   assert.equal((await readFile('dist/CNAME','utf8')).trim(), 'clearunitplan.com');
-  assert.equal((await readFile('dist/sitemap.xml','utf8')).match(/<loc>/g).length, 8);
+  assert.equal((await readFile('dist/sitemap.xml','utf8')).match(/<loc>/g).length, 9);
 });
