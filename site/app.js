@@ -1,9 +1,16 @@
 import {calculate} from './calculator.js';
+import {track} from './analytics.js';
 
 const form = document.querySelector('#plan-form');
 const results = document.querySelector('#results');
 const error = document.querySelector('#error');
 const empty = document.querySelector('#empty');
+let inputMode = 'own_inputs';
+let started = false;
+form.addEventListener('input', () => {
+  inputMode = 'own_inputs';
+  if (!started) { track('calculator_start'); started = true; }
+});
 function hideResults() {
   results.hidden = true;
   empty.hidden = false;
@@ -57,6 +64,7 @@ form.addEventListener('submit', event => {
     results.hidden = false;
     empty.hidden = true;
     results.focus();
+    track('comparison_complete', inputMode);
   } catch (exception) {
     hideResults();
     error.textContent = exception.message;
@@ -74,8 +82,9 @@ form.addEventListener('invalid', event => {
   const group = field.closest('fieldset').querySelector('legend').textContent;
   error.textContent = 'Check ' + label + ' under ' + group + '.';
 }, true);
-document.querySelector('#print').addEventListener('click', () => window.print());
+document.querySelector('#print').addEventListener('click', () => { track('result_print', inputMode); window.print(); });
 document.querySelector('#example').addEventListener('click', () => {
+  inputMode = 'example';
   const values = {
     today:'2026-11-25', renewal:'2026-12-01', monthly:'145', noticeDays:'0', noticeDate:'2026-11-25',
     carDate:'2026-12-05', carTransport:'48', carOther:'0', carRent:'',
