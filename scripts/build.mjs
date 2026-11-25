@@ -9,7 +9,7 @@ const pages = [
   ...JSON.parse(await readFile(resolve(root, 'content/pages.json'), 'utf8')),
   ...JSON.parse(await readFile(resolve(root, 'content/resources.json'), 'utf8'))
 ];
-const fonts = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&amp;display=swap"><link rel="stylesheet" href="/style.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#ffffff"><script type="module" src="/ui.js"></script><script type="module" src="/analytics.js"></script>`;
+const fonts = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&amp;display=swap"><link rel="stylesheet" href="/style.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#ffffff"><script type="module" src="/ui.js"></script><script type="module" src="/analytics.js?v=20261125-gtm1"></script>`;
 const brand = `<a class="brand title-3" href="/"><img src="/favicon.svg" alt="" width="24" height="24">Clear Unit Plan</a>`;
 function header(path) {
   const link = (href, name) => {

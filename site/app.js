@@ -1,5 +1,5 @@
 import {calculate} from './calculator.js';
-import {track} from './analytics.js';
+import {track} from './analytics.js?v=20261125-gtm1';
 
 const form = document.querySelector('#plan-form');
 const results = document.querySelector('#results');
