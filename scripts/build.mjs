@@ -5,7 +5,10 @@ const root = resolve(import.meta.dirname, '..');
 const output = resolve(root, 'dist');
 await mkdir(output, {recursive:true});
 await cp(resolve(root, 'site'), output, {recursive:true});
-const pages = JSON.parse(await readFile(resolve(root, 'content/pages.json'), 'utf8'));
+const pages = [
+  ...JSON.parse(await readFile(resolve(root, 'content/pages.json'), 'utf8')),
+  ...JSON.parse(await readFile(resolve(root, 'content/resources.json'), 'utf8'))
+];
 const fonts = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&amp;display=swap"><link rel="stylesheet" href="/style.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#ffffff"><script type="module" src="/ui.js"></script>`;
 const brand = `<a class="brand title-3" href="/"><img src="/favicon.svg" alt="" width="24" height="24">Clear Unit Plan</a>`;
 function header(path) {

@@ -157,6 +157,12 @@ details label{margin-top:var(--s200)}
 .article .sources{font-size:14px;line-height:20px;overflow-wrap:anywhere}
 .article .callout{background:var(--soft);padding:var(--s300);border-radius:12px}
 .article .button{font-weight:600}
+.resource-actions{display:flex;flex-wrap:wrap;gap:var(--s100)}
+.message-template{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;background:var(--soft);padding:var(--s300);border:1px solid var(--line);border-radius:12px}
+.paper-checklist{list-style:none;padding-left:0!important}
+.paper-checklist li{padding-left:28px;position:relative;margin-block:var(--s100)}
+.paper-checklist li::before{content:'';position:absolute;left:0;top:5px;width:14px;height:14px;border:1px solid var(--field)}
+.table-scroll{max-width:100%;overflow-x:auto}
 [hidden]{display:none!important}
 
 @media(max-width:850px){
@@ -208,6 +214,11 @@ details label{margin-top:var(--s200)}
   .button:active,.link-card:hover{transform:none}
 }
 @media print{
+  .article .resource-actions{display:none!important}
+  .article{padding-block:0;max-width:none}
+  .article h2{break-after:avoid}
+  .article li,.article tr{break-inside:avoid}
+  .article .table-scroll{overflow:visible}
   .site-header,.hero,form,.empty,footer,.section-heading,.results .button,main>section:not(#planner){display:none!important}
   .band{background:var(--paper);padding:0}
   .wrap{max-width:none;padding:0}

@@ -1,6 +1,26 @@
 // Menu, scroll reveals and the word by word tagline. The pages stay readable if this never runs.
 const root = document.documentElement;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('[data-print]').forEach(button => {
+  button.addEventListener('click', () => window.print());
+});
+document.querySelectorAll('[data-copy]').forEach(button => {
+  button.addEventListener('click', async () => {
+    const template = document.getElementById(button.dataset.copy);
+    const status = document.querySelector('[data-copy-status]');
+    try {
+      await navigator.clipboard.writeText(template.textContent);
+      status.textContent = 'Template copied. Replace the bracketed text before sending.';
+    } catch {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(template);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      status.textContent = 'Select Copy from your browser menu to copy the highlighted template.';
+    }
+  });
+});
 root.classList.add('js');
 
 const toggle = document.querySelector('.menu-toggle');
