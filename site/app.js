@@ -44,8 +44,13 @@ form.addEventListener('submit', event => {
     const max = Math.max(1, ...comparison.options.map(option => option.totalCents));
     const names = comparison.winners.join(' and ');
     const heading = comparison.winners.length > 1 ? names + ' tie at ' + cash(comparison.best) : names + ' costs least at ' + cash(comparison.best);
+    const nextCost = Math.min(...comparison.options.map(option => option.totalCents).filter(cost => cost > comparison.best));
+    const difference = Number.isFinite(nextCost)
+      ? 'The next higher estimate is ' + cash(nextCost - comparison.best) + ' more.'
+      : 'All three estimates have the same total.';
     document.querySelector('#result-content').innerHTML = `
       <h2 id="result-title" class="heading-4">${heading}</h2>
+      <p><strong>${difference}</strong></p>
       <p>Additional costs from ${dateLabel(data.today)} through each completed exit, under your entered billing and notice terms.</p>
       <div class="result-grid">${comparison.options.map(option => `
         <article class="result-card ${option.totalCents === comparison.best ? 'winner' : ''}">
@@ -59,7 +64,7 @@ form.addEventListener('submit', event => {
           ${option.noticeExtended ? '<p class="result-note">The entered notice period ends after your move. Confirm the charge with the facility.</p>' : ''}
           <p class="result-note">${option.totalCents === comparison.best ? 'Lowest entered cost.' : cash(option.totalCents - comparison.best) + ' more than the lowest option.'}</p>
         </article>`).join('')}</div>
-      <h3 class="title-1">Before you commit</h3><ul class="checklist"><li>Confirm that notice given on ${dateLabel(data.noticeDate)} is accepted and ask for the final bill in writing.</li><li>Book the transport and help needed to finish your chosen plan on time.</li><li>Empty and clean the unit, remove your lock, and complete the facility's closing confirmation.</li></ul>
+      <h3 class="title-1">Before you commit</h3><ul class="checklist"><li>Use the <a href="/resources/facility-message/">facility message template</a> to confirm that notice given on ${dateLabel(data.noticeDate)} is accepted and ask for the final bill in writing.</li><li>Book the transport and help needed to finish your chosen plan on time.</li><li>Use the <a href="/resources/move-out-checklist/">move-out checklist</a> to empty the unit and confirm account closure.</li></ul>
       <p class="small">A full extra month is counted on a renewal date. Deposits, overdue balances, refunds larger than extra rent, future rate changes and unentered charges require a separate adjustment. Verify your final amount with the facility.</p>`;
     results.hidden = false;
     empty.hidden = true;
