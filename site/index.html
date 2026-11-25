@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Storage Move-Out Cost Calculator | Clear Unit Plan</title>
+  <meta name="description" content="Compare a rental truck, car trips and a later move-out. See how your storage renewal date and notice period change the total cost.">
+  <link rel="canonical" href="https://clearunitplan.com/">
+  <meta name="theme-color" content="#153e3b">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#planner">Skip to planner</a>
+  <header class="header wrap"><a class="brand" href="./"><span class="brandmark" aria-hidden="true"></span>Clear Unit Plan</a><nav aria-label="Main"><a href="./guides/">Moving guides</a><a href="./method/">How it works</a></nav></header>
+  <main>
+    <section class="hero wrap">
+      <div><p class="eyebrow">Storage move-out calculator</p><h1>Clear the unit.<br>Keep more of<br>your money.</h1><p class="intro">A truck this weekend, a few car trips, or one more month? Put the dates and costs side by side.</p><a class="button" href="#planner">Compare my options</a></div>
+      <aside class="hero-example" aria-label="Worked example"><p class="eyebrow">One deadline changes the answer</p><p class="example-price">$98<span>saved by finishing before renewal</span></p><div class="example-row"><span>Truck before renewal</span><strong>$95</strong></div><div class="example-row"><span>Car trips + another month</span><strong>$193</strong></div><p class="small">Illustration using $48 in car trips and a $145 renewal charge. Use your own quotes below.</p></aside>
+    </section>
+    <section class="planner-section" id="planner"><div class="wrap">
+      <div class="section-heading"><p class="eyebrow">Your moving decision</p><h2>Start with the next bill.</h2><p>Use the terms in your rental agreement and dates you can actually complete each move.</p></div>
+      <form id="plan-form">
+        <fieldset class="panel"><legend>Storage and notice</legend><div class="fields">
+          <label>Compare costs from<input name="today" type="date" required><span>Money already paid before this date is excluded.</span></label>
+          <label>Next unpaid renewal<input name="renewal" type="date" required><span>Use your billing date, including an unpaid bill due today.</span></label>
+          <label>Monthly rent + mandatory fees ($)<input name="monthly" type="number" min="0" max="1000000" step="0.01" placeholder="145.00" required><span>Include recurring protection or insurance you must pay.</span></label>
+          <label>Required notice (days)<input name="noticeDays" type="number" min="0" max="365" step="1" value="0" required><span>Check the agreement or ask the facility.</span></label>
+          <label>Notice given or planned date<input name="noticeDate" type="date" required><span>Charges can continue until the notice period ends.</span></label>
+        </div><label class="check"><input name="fullMonth" type="checkbox" required><span>I am comparing full monthly renewal charges, due on the renewal date. I will enter a facility-confirmed rent override for any option with different billing or refunds.</span></label></fieldset>
+        <div class="option-grid">
+          <fieldset class="panel"><legend>Car trips</legend><label>Date you can finish every trip<input name="carDate" type="date" required></label><label>All trips combined ($)<input name="carTransport" type="number" min="0" max="1000000" step="0.01" placeholder="48.00" required><span>Include fuel, tolls and any helper costs.</span></label><label>Other exit charges ($)<input name="carOther" type="number" min="0" max="1000000" step="0.01" value="0" required></label><details><summary>Override additional rent</summary><label>Confirmed extra rent minus refunds ($)<input name="carRent" type="number" min="0" max="1000000" step="0.01" placeholder="Use calculated rent"><span>Use only a total confirmed by your facility. Refund credits larger than extra rent require a separate comparison.</span></label></details></fieldset>
+          <fieldset class="panel"><legend>Rental truck</legend><label>Date you can finish the move<input name="truckDate" type="date" required></label><label>All-in truck and moving cost ($)<input name="truckTransport" type="number" min="0" max="1000000" step="0.01" placeholder="95.00" required><span>Include mileage, fuel, tax, coverage and help.</span></label><label>Other exit charges ($)<input name="truckOther" type="number" min="0" max="1000000" step="0.01" value="0" required></label><details><summary>Override additional rent</summary><label>Confirmed extra rent minus refunds ($)<input name="truckRent" type="number" min="0" max="1000000" step="0.01" placeholder="Use calculated rent"><span>Use the facility's total for this move-out date.</span></label></details></fieldset>
+          <fieldset class="panel"><legend>Move later</legend><label>Date you can finish the later move<input name="laterDate" type="date" required></label><label>Eventual moving cost ($)<input name="laterTransport" type="number" min="0" max="1000000" step="0.01" placeholder="48.00" required><span>Include the transport you will still need later.</span></label><label>Other exit charges ($)<input name="laterOther" type="number" min="0" max="1000000" step="0.01" value="0" required></label><details><summary>Override additional rent</summary><label>Confirmed extra rent minus refunds ($)<input name="laterRent" type="number" min="0" max="1000000" step="0.01" placeholder="Use calculated rent"><span>Use the facility's total for this move-out date.</span></label></details></fieldset>
+        </div>
+        <p class="small assumptions">The estimate counts a full new month if your move-out or notice end falls on a renewal date. Actual billing, notice acceptance and refunds depend on your agreement. All three moves must be physically possible.</p>
+        <div class="form-actions"><button type="submit">Calculate my move</button><button class="secondary" type="button" id="example">Try the worked example</button><button class="text-button" type="reset">Clear entries</button></div><p id="error" role="alert"></p>
+      </form>
+      <section id="results" class="results" aria-labelledby="result-title" tabindex="-1" hidden><div id="result-content"></div><button type="button" class="secondary" id="print">Print my comparison</button></section>
+    </div></section>
+    <section class="wrap reading"><div class="section-heading"><p class="eyebrow">Before you book</p><h2>Make the next move count.</h2></div><div class="guide-grid"><a class="guide-card" href="./guides/truck-or-car/"><h3>Truck or car trips?</h3><p>Compare all-in transport costs against the next renewal.</p><span>Read the worked example</span></a><a class="guide-card" href="./guides/move-out-notice/"><h3>The notice deadline</h3><p>Emptying a unit and ending the rental can be different steps.</p><span>Check what to ask</span></a><a class="guide-card" href="./guides/another-month/"><h3>One more month?</h3><p>Find how much a later move has to save to cover the extra rent.</p><span>Work out the threshold</span></a></div></section>
+  </main>
+  <footer class="wrap footer"><a class="brand" href="./">Clear Unit Plan</a><nav aria-label="Footer"><a href="./about/">About & contact</a><a href="./method/">Method</a><a href="./privacy/">Privacy</a></nav><p>Estimates in US dollars. Confirm your rental terms and final bill with the facility.</p></footer>
+</body></html>
