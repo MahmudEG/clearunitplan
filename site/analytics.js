@@ -1,5 +1,6 @@
 // Basic consent mode: no Google tag or measurement requests before opt-in.
 const measurementId = 'G-J0ZJ9KL7QJ';
+const containerId = 'GTM-WZ6D4F74';
 const preferenceKey = 'cup-analytics-consent-v1';
 let allowed = false;
 let loaded = false;
@@ -35,6 +36,13 @@ function enable() {
   script.async = true;
   script.src = 'https://www.googletagmanager.com/gtag/js?id=' + measurementId;
   document.head.append(script);
+  // The supplied container shares the dataLayer and gtag initialization above.
+  // Emit the standard container-start event so All Pages triggers can run.
+  window.dataLayer.push({'gtm.start': Date.now(), event: 'gtm.js'});
+  const container = document.createElement('script');
+  container.async = true;
+  container.src = 'https://www.googletagmanager.com/gtm.js?id=' + containerId;
+  document.head.append(container);
 }
 export function track(eventName, mode = 'own_inputs') {
   if (!allowed || !['calculator_start', 'comparison_complete', 'result_print'].includes(eventName)) return;
@@ -68,6 +76,7 @@ function showChoices() {
       else {
         allowed = false;
         window['ga-disable-' + measurementId] = true;
+        window.gtag?.('consent', 'update', {analytics_storage: 'denied'});
         clearAnalyticsCookies();
         // Reload to stop the loaded tag and its automatic engagement listeners.
         if (loaded) location.reload();

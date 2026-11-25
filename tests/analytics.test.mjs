@@ -43,14 +43,17 @@ test('analytics makes no tag requests or events before opt-in or after rejection
   assert.equal(b.scripts.length,0);
   assert.equal(browser('deny').panel,undefined);
   b.settings.click(); b.panel.buttons[1].click();
-  assert.equal(b.scripts.length,1);
+  assert.equal(b.scripts.length,2);
   assert.equal(b.context.window['ga-disable-G-J0ZJ9KL7QJ'],false);
 });
-test('consent loads one tag, sanitizes attribution and allowlists event data', () => {
+test('consent loads each Google tag once, sanitizes attribution and allowlists event data', () => {
   const b=browser();
   b.panel.buttons[1].click();
-  assert.equal(b.scripts.length,1);
+  assert.equal(b.scripts.length,2);
   assert.match(b.scripts[0].src,/G-J0ZJ9KL7QJ$/);
+  assert.equal(b.scripts[1].src,'https://www.googletagmanager.com/gtm.js?id=GTM-WZ6D4F74');
+  assert.equal(b.scripts[1].async,true);
+  assert.equal(b.context.window.dataLayer.filter(item=>item.event==='gtm.js').length,1);
   const commands=b.context.window.dataLayer.map(args=>Array.from(args));
   const config=commands.find(args=>args[0]==='config')[2];
   assert.equal(config.page_referrer,'https://example.org/post');
@@ -65,7 +68,7 @@ test('consent loads one tag, sanitizes attribution and allowlists event data', (
   assert.equal(events[1][2].input_mode,'own_inputs');
   assert.deepEqual(Object.keys(events[1][2]).sort(),['input_mode','send_to']);
   b.settings.click(); b.panel.buttons[1].click();
-  assert.equal(b.scripts.length,1);
+  assert.equal(b.scripts.length,2);
 });
 test('withdrawing consent stops custom events and reloads to stop the active tag', () => {
   const b=browser('allow');
