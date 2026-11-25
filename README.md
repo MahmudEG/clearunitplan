@@ -17,7 +17,7 @@ Serve `dist` with a static HTTP server to preview. The main calculator compares 
 
 - `Check planner` runs on pushes, pull requests, manual requests and daily at 06:17 UTC. It tests calculations and the build, then saves a preview artifact.
 - `Review operator sources` runs Mondays at 06:27 UTC and on manual requests. It produces an Actions summary and downloadable report. Missing wording and blocked requests fail the job for owner review. It never changes published factual claims automatically.
-- `Publish GitHub Pages preview` runs manually. It checks the site before publishing. Enable GitHub Actions as the Pages source and configure the custom domain before using it. After edits, run it again to update the preview.
+- `Publish GitHub Pages preview` runs on updates to main and on manual requests. It checks the site before publishing. Enable GitHub Actions as the Pages source and configure the custom domain before using it.
 
 GitHub may delay scheduled jobs. Scheduled workflows in inactive public repositories can be disabled by GitHub. Review Actions availability regularly.
 
