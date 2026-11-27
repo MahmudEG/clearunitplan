@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./ui.js"></script>
   <script type="module" src="./analytics.js?v=20261125-settings1"></script>
-  <script type="module" src="./app.js?v=20261125-settings1"></script>
+  <script type="module" src="./app.js?v=20261127-billing-day"></script>
 </head>
 <body>
   <a class="skip button-sm" href="#planner">Skip to calculator</a>
@@ -70,6 +70,7 @@
             <label>Required notice (days)<input name="noticeDays" type="number" inputmode="numeric" min="0" max="365" step="1" value="0" required><span>Check the agreement or ask the facility.</span></label>
             <label>Notice given or planned date<input name="noticeDate" type="date" required><span>Charges can continue until the notice period ends.</span></label>
           </div>
+          <details><summary class="button-sm">Does your next bill fall in a shorter month?</summary><label>Regular billing day (optional)<input name="billingDay" type="number" inputmode="numeric" min="1" max="31" step="1"><span>For example, enter 31 if your February bill falls on the 28th but your agreement bills on the 31st in longer months. Otherwise leave this blank.</span></label></details>
           <label class="check"><input name="fullMonth" type="checkbox" required><span>I am comparing full monthly charges due on the renewal date. I will enter a rent amount confirmed by the facility for any option with different billing or refunds.</span></label></fieldset>
 
           <div class="option-grid">

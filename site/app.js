@@ -1,4 +1,4 @@
-import {calculate} from './calculator.js';
+import {calculate} from './calculator.js?v=20261127-billing-day';
 import {track} from './analytics.js?v=20261125-settings1';
 
 const form = document.querySelector('#plan-form');
@@ -81,6 +81,8 @@ form.addEventListener('reset', () => { hideResults(); setTimeout(setInitialDates
 // Name the first field that needs attention beside the submit button.
 form.addEventListener('invalid', event => {
   const field = event.target;
+  const details = field.closest('details');
+  if (details) details.open = true;
   field.setAttribute('aria-invalid', 'true');
   if (field !== form.querySelector('input:invalid')) return;
   const label = field.type === 'checkbox' ? 'the billing confirmation' : field.closest('label').firstChild.textContent.trim();
@@ -91,7 +93,7 @@ document.querySelector('#print').addEventListener('click', () => { track('result
 document.querySelector('#example').addEventListener('click', () => {
   inputMode = 'example';
   const values = {
-    today:'2026-11-25', renewal:'2026-12-01', monthly:'145', noticeDays:'0', noticeDate:'2026-11-25',
+    today:'2026-11-25', renewal:'2026-12-01', billingDay:'', monthly:'145', noticeDays:'0', noticeDate:'2026-11-25',
     carDate:'2026-12-05', carTransport:'48', carOther:'0', carRent:'',
     truckDate:'2026-11-28', truckTransport:'95', truckOther:'0', truckRent:'',
     laterDate:'2027-01-05', laterTransport:'48', laterOther:'0', laterRent:''

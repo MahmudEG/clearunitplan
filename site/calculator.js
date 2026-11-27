@@ -18,10 +18,10 @@ export function money(value, name) {
   return Math.round((number + Number.EPSILON) * 100);
 }
 
-export function billingDate(anchor, offset) {
+export function billingDate(anchor, offset, billingDay = anchor.getUTCDate()) {
   const first = new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() + offset, 1));
   const lastDay = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
-  first.setUTCDate(Math.min(anchor.getUTCDate(), lastDay));
+  first.setUTCDate(Math.min(billingDay, lastDay));
   return first;
 }
 
@@ -37,6 +37,13 @@ export function calculate(input) {
   if (renewal < today || renewal > new Date(today.getTime() + 366 * DAY)) {
     throw new Error('The next unpaid renewal must be today or within the next year.');
   }
+  const billingDay = String(input.billingDay ?? '').trim() === '' ? renewal.getUTCDate() : Number(input.billingDay);
+  if (!Number.isInteger(billingDay) || billingDay < 1 || billingDay > 31) {
+    throw new Error('Enter a regular billing day from 1 to 31.');
+  }
+  if (billingDate(renewal, 0, billingDay).getTime() !== renewal.getTime()) {
+    throw new Error('The regular billing day must match the next unpaid renewal after adjusting for a short month.');
+  }
   const earliestRelease = new Date(noticeDate.getTime() + noticeDays * DAY);
   const horizon = new Date(today.getTime() + 730 * DAY);
   const options = input.options.map(option => {
@@ -47,7 +54,7 @@ export function calculate(input) {
     const transportCents = money(option.transport, option.name + ' moving cost');
     const otherCents = money(option.other, option.name + ' extra charges');
     let renewals = 0;
-    while (billingDate(renewal, renewals) <= release) renewals++;
+    while (billingDate(renewal, renewals, billingDay) <= release) renewals++;
     let rentCents = renewals * monthlyCents;
     if (option.rentOverride !== '') rentCents = money(option.rentOverride, option.name + ' confirmed additional rent');
     return {

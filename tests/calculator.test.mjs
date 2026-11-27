@@ -36,6 +36,16 @@ test('month end keeps the original billing anniversary', () => {
   assert.equal(billingDate(anchor, 2).toISOString().slice(0,10), '2028-03-31');
   assert.equal(billingDate(readDate('2027-01-31'), 1).getUTCDate(), 28);
 });
+test('a shortened first renewal uses the regular billing day for subsequent bills', () => {
+  const input = base();
+  input.today = input.noticeDate = '2027-02-25';
+  input.renewal = '2027-02-28';
+  input.options = [option('On the next bill','2027-02-28','0'), option('Before March renewal','2027-03-30','0'), option('On March renewal','2027-03-31','0')];
+  assert.deepEqual(calculate({...input, billingDay:'31'}).options.map(item => item.rentCents), [14500,14500,29000]);
+  assert.deepEqual(calculate({...input, billingDay:''}).options.map(item => item.rentCents), [14500,29000,29000]);
+  assert.throws(() => calculate({...input, billingDay:'27'}), /must match the next unpaid renewal/);
+  assert.throws(() => calculate({...input, billingDay:'32'}), /from 1 to 31/);
+});
 test('ties and free options are retained', () => {
   const input = base(); input.monthly = '0'; input.options = [option('A','2026-11-28','0'),option('B','2026-11-29','0')];
   assert.deepEqual(calculate(input).winners, ['A','B']);
